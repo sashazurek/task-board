@@ -1,0 +1,66 @@
+--- # metatasks
+- SkincareRoutine: &mt_skincare_routine !metatask
+    tasks:
+        - *t_wash_face
+        - *t_apply_sunscreen
+- MorningRoutine: &mt_morning_routine !metatask
+    tasks:
+        - *mt_skincare_routine
+        - *t_brush_teeth
+        - *t_eat_breakfast
+        - *t_take_meds
+        # should implicit tasks be allowed? this is an example of one
+        - *t_turn_on_AC
+- EveningRoutine: &mt_evening_routine !metatask
+    tasks:
+        - *t_walk_dog
+        # should implicit tasks be allowed? this is an example of one
+        - *t_turn_off_AC
+          
+--- # tasks
+- WashFace: &t_wash_face !task
+    name: Wash your face
+    importance: low
+- ApplySunscreen: &t_apply_sunscreen !task
+    name: Apply sunscreen
+    description: Apply sunscreen to face, neck, and ears.
+    importance: high
+- BrushTeeth: &t_brush_teeth !task
+    name: Brush your teeth
+    importance: low
+- TakeMeds: &t_take_meds !task 
+    name: Take your morning meds
+    description: Morning meds are adderall, fiber, and estrogen.
+    importance: high
+    dependencies:
+        - *t_eat_breakfast
+- EatBreakfast: &t_eat_breakfast !task 
+    name: Eat some kind of breakfast
+    importance: high
+- WalkDog: &t_walk_dog !task
+    name: Walk the dog
+    importance: high
+- TakeDownWindowFans: &t_take_down_window_fans !task
+    name: take down the window fans
+    importance: low
+    implies: [*t_turn_on_AC]
+- PutUpWindowFans: &t_put_up_window_fans !task
+    name: Put up the window fans
+    importance: low
+    implies: [*t_turn_off_AC]
+- TurnOnAC: &t_turn_on_AC !task
+    name: Turn on the AC
+    importance: low
+    dependencies: [*t_take_down_window_fans]
+- TurnOffAC: &t_turn_off_AC !task
+    name: Turn off the AC
+    importance: low
+    dependencies: [*t_put_up_window_fans]
+
+--- # daily tasks
+DailyTasks: &tg_daily_tasks !taskgroup
+    name: Daily Tasks
+    description: Tasks which should be done daily
+    tasks:
+        - &mt_morning_routine
+        - &mt_evening_routine
